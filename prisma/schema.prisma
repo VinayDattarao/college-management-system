@@ -1,0 +1,75 @@
+model Timetable {
+  id        String   @id @default(cuid())
+  day       String
+  time      String
+  subject   String
+  lecturer  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Attendance {
+  id        String   @id @default(cuid())
+  date      DateTime
+  present   Boolean
+  student   Student  @relation(fields: [studentId], references: [id])
+  studentId String
+  subject   Subject  @relation(fields: [subjectId], references: [id])
+  subjectId String
+  classroom Classroom @relation(fields: [classroomId], references: [id])
+  classroomId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([studentId, subjectId, classroomId, date])
+}
+
+model Student {
+  id          String       @id @default(cuid())
+  name        String
+  rollNumber  String
+  email       String?
+  password    String
+  role        String       @default("student")
+  classroom   Classroom?   @relation(fields: [classroomId], references: [id])
+  classroomId String?
+  attendance  Attendance[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@unique([rollNumber])
+}
+
+model Subject {
+  id          String       @id @default(cuid())
+  name        String
+  code        String
+  classroom   Classroom?   @relation(fields: [classroomId], references: [id])
+  classroomId String?
+  attendance  Attendance[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@unique([code, classroomId])
+}
+
+model Classroom {
+  id          String     @id @default(cuid())
+  name        String
+  classCode   String     @unique
+  subjects    Subject[]
+  students    Student[]
+  attendance  Attendance[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+model Lecturer {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  password  String
+  name      String
+  email     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+} 
