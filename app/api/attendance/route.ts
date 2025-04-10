@@ -6,18 +6,18 @@ const prisma = new PrismaClient()
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url)
+    const userId = searchParams.get('userId')
+    const classId = searchParams.get('classId')
     const studentId = searchParams.get('studentId')
-    const subjectId = searchParams.get('subjectId')
-    const classroomId = searchParams.get('classroomId')
     const date = searchParams.get('date')
 
-    if (studentId && subjectId && classroomId && date) {
+    if (userId && classId && studentId && date) {
       const attendance = await prisma.attendance.findUnique({
         where: {
-          studentId_subjectId_classroomId_date: {
+          userId_classId_studentId_date: {
+            userId,
+            classId,
             studentId,
-            subjectId,
-            classroomId,
             date: new Date(date)
           }
         }
@@ -27,9 +27,9 @@ export async function GET(request: Request) {
 
     const attendance = await prisma.attendance.findMany({
       include: {
-        student: true,
-        subject: true,
-        classroom: true
+        user: true,
+        class: true,
+        student: true
       }
     })
     return NextResponse.json(attendance)
@@ -41,26 +41,26 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const { studentId, subjectId, classroomId, date, present } = body
+    const { userId, classId, studentId, date, status } = body
 
     const attendance = await prisma.attendance.upsert({
       where: {
-        studentId_subjectId_classroomId_date: {
+        userId_classId_studentId_date: {
+          userId,
+          classId,
           studentId,
-          subjectId,
-          classroomId,
           date: new Date(date)
         }
       },
       update: {
-        present
+        status
       },
       create: {
+        userId,
+        classId,
         studentId,
-        subjectId,
-        classroomId,
         date: new Date(date),
-        present
+        status
       }
     })
 

@@ -1,75 +1,80 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id          String       @id @default(cuid())
+  name        String
+  email       String       @unique
+  password    String
+  role        String
+  attendance  Attendance[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Class {
+  id          String       @id @default(cuid())
+  name        String
+  code        String       @unique
+  subjects    Subject[]
+  attendance  Attendance[]
+  students    Student[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Subject {
+  id        String   @id @default(cuid())
+  name      String
+  code      String   @unique
+  class     Class    @relation(fields: [classId], references: [id])
+  classId   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Student {
+  id          String       @id @default(cuid())
+  name        String
+  rollNumber  String       @unique
+  class       Class        @relation(fields: [classId], references: [id])
+  classId     String
+  attendance  Attendance[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Attendance {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  class     Class    @relation(fields: [classId], references: [id])
+  classId   String
+  student   Student  @relation(fields: [studentId], references: [id])
+  studentId String
+  date      DateTime
+  status    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, classId, studentId, date])
+}
+
 model Timetable {
   id        String   @id @default(cuid())
   day       String
   time      String
   subject   String
   lecturer  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model Attendance {
-  id        String   @id @default(cuid())
-  date      DateTime
-  present   Boolean
-  student   Student  @relation(fields: [studentId], references: [id])
-  studentId String
-  subject   Subject  @relation(fields: [subjectId], references: [id])
-  subjectId String
-  classroom Classroom @relation(fields: [classroomId], references: [id])
-  classroomId String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@unique([studentId, subjectId, classroomId, date])
-}
-
-model Student {
-  id          String       @id @default(cuid())
-  name        String
-  rollNumber  String
-  email       String?
-  password    String
-  role        String       @default("student")
-  classroom   Classroom?   @relation(fields: [classroomId], references: [id])
-  classroomId String?
-  attendance  Attendance[]
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-
-  @@unique([rollNumber])
-}
-
-model Subject {
-  id          String       @id @default(cuid())
-  name        String
-  code        String
-  classroom   Classroom?   @relation(fields: [classroomId], references: [id])
-  classroomId String?
-  attendance  Attendance[]
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-
-  @@unique([code, classroomId])
-}
-
-model Classroom {
-  id          String     @id @default(cuid())
-  name        String
-  classCode   String     @unique
-  subjects    Subject[]
-  students    Student[]
-  attendance  Attendance[]
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-}
-
-model Lecturer {
-  id        String   @id @default(cuid())
-  username  String   @unique
-  password  String
-  name      String
-  email     String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 } 

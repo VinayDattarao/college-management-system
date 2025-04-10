@@ -83,16 +83,16 @@ export default function Classes() {
 
   const loadTimetableSubjects = () => {
     const timetable = [
-      { name: 'DM', code: 'CS301' },
-      { name: 'Comm-Skills', code: 'CS302' },
-      { name: 'BEFA', code: 'CS303' },
-      { name: 'DBMS', code: 'CS304' },
-      { name: 'OS', code: 'CS305' },
-      { name: 'SE', code: 'CS306' },
-      { name: 'Node.js', code: 'CS307' },
-      { name: 'APTITUDE', code: 'CS308' },
-      { name: 'COI', code: 'CS309' },
-      { name: 'CRT/Coding', code: 'CS310' }
+      { id: 'CS301', name: 'DM', code: 'CS301' },
+      { id: 'CS302', name: 'Comm-Skills', code: 'CS302' },
+      { id: 'CS303', name: 'BEFA', code: 'CS303' },
+      { id: 'CS304', name: 'DBMS', code: 'CS304' },
+      { id: 'CS305', name: 'OS', code: 'CS305' },
+      { id: 'CS306', name: 'SE', code: 'CS306' },
+      { id: 'CS307', name: 'Node.js', code: 'CS307' },
+      { id: 'CS308', name: 'APTITUDE', code: 'CS308' },
+      { id: 'CS309', name: 'COI', code: 'CS309' },
+      { id: 'CS310', name: 'CRT/Coding', code: 'CS310' }
     ]
     setTimetableSubjects(timetable)
   }
